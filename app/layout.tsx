@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Buy SOL Instantly | MoonPay",
-  description: "Purchase Solana (SOL) securely and instantly using MoonPay",
+  title: "Buy SOL Instantly | Alchemy Pay",
+  description: "Purchase Solana (SOL) securely and instantly using Alchemy Pay",
   other: {
     // Telegram WebView compatibility
     "telegram-web-app-compatible": "true",

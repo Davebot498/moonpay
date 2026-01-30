@@ -4,11 +4,11 @@
  * BuySolCard Component
  * 
  * Main UI component for the Telegram Mini App that allows users to
- * purchase Solana (SOL) using MoonPay by entering their wallet address.
+ * purchase Solana (SOL) using Alchemy Pay by entering their wallet address.
  */
 
 import { useState } from 'react';
-import { openMoonPayWidget, isValidSolanaAddress } from '@/lib/moonpay';
+import { getAlchemyPayUrl, isValidSolanaAddress } from '@/lib/alchemypay';
 
 export default function BuySolCard() {
     const [walletAddress, setWalletAddress] = useState('');
@@ -18,7 +18,7 @@ export default function BuySolCard() {
     /**
      * Handles the purchase flow when user clicks "Buy SOL"
      */
-    const handleBuySol = async () => {
+    const handleBuySol = () => {
         // Clear previous errors
         setError('');
 
@@ -36,21 +36,23 @@ export default function BuySolCard() {
         try {
             setIsLoading(true);
 
-            // Open MoonPay widget
-            await openMoonPayWidget({
+            // Generate Alchemy Pay URL
+            const checkoutUrl = getAlchemyPayUrl({
                 walletAddress: walletAddress.trim(),
-                currencyCode: 'SOL',
-                baseCurrencyCode: 'usd',
+                crypto: 'SOL',
+                network: 'SOLANA',
+                fiat: 'NGN',
             });
 
-            // Widget opened successfully
-            setIsLoading(false);
+            // Redirect to Alchemy Pay
+            window.location.href = checkoutUrl;
+
         } catch (err) {
             setIsLoading(false);
             setError(
                 err instanceof Error
                     ? err.message
-                    : 'Failed to open payment widget. Please try again.'
+                    : 'Failed to initiate payment. Please try again.'
             );
         }
     };
@@ -64,7 +66,7 @@ export default function BuySolCard() {
                         Buy SOL Instantly
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        Purchase Solana securely with MoonPay
+                        Purchase Solana securely via Alchemy Pay
                     </p>
                 </div>
 
@@ -125,7 +127,7 @@ export default function BuySolCard() {
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                 ></path>
                             </svg>
-                            Opening MoonPay...
+                            Redirecting to Alchemy Pay...
                         </span>
                     ) : (
                         'Buy SOL'
@@ -134,7 +136,7 @@ export default function BuySolCard() {
 
                 {/* Security Notice */}
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-6">
-                    🔒 Payments are processed securely by MoonPay
+                    🔒 Payments are securely processed by Alchemy Pay
                 </p>
             </div>
         </div>

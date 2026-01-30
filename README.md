@@ -1,12 +1,12 @@
-# MoonPay Telegram Mini App
+# Alchemy Pay Telegram Mini App
 
-A Next.js-based Telegram Mini Web App that allows users to purchase Solana (SOL) non-custodially using MoonPay integration.
+A Next.js-based Telegram Mini Web App that allows users to purchase Solana (SOL) non-custodially using Alchemy Pay integration.
 
 ## Features
 
 ✨ **Clean & Minimal UI** - Centered card layout optimized for mobile
 🔐 **Non-Custodial** - SOL sent directly to user's wallet address
-💳 **MoonPay Integration** - Secure payment processing
+💳 **Alchemy Pay Integration** - Secure payment processing via redirect flow
 📱 **Telegram Compatible** - Optimized for Telegram WebView
 🌙 **Dark Mode** - Automatic dark mode support
 ⚡ **Next.js 14** - Built with App Router and TypeScript
@@ -16,13 +16,13 @@ A Next.js-based Telegram Mini Web App that allows users to purchase Solana (SOL)
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Payment SDK**: @moonpay/moonpay-js
+- **Integration**: Alchemy Pay On-Ramp
 - **Deployment**: Vercel
 
 ## Prerequisites
 
 - Node.js 18+ and npm
-- MoonPay API Key ([Get one here](https://www.moonpay.com/dashboard))
+- Alchemy Pay App ID ([Get one here](https://alchemypay.org/developers))
 - Vercel account (for deployment)
 - Telegram Bot (for Mini App integration)
 
@@ -42,10 +42,9 @@ A Next.js-based Telegram Mini Web App that allows users to purchase Solana (SOL)
    
    Create a `.env.local` file in the root directory:
    ```env
-   NEXT_PUBLIC_MOONPAY_API_KEY=your_moonpay_api_key_here
+   NEXT_PUBLIC_ALCHEMY_PAY_APP_ID=your_app_id_here
+   NEXT_PUBLIC_ALCHEMY_PAY_ENV=test
    ```
-
-   > **Important**: Get your MoonPay API key from [MoonPay Dashboard](https://www.moonpay.com/dashboard)
 
 ## Development
 
@@ -57,143 +56,50 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the app.
 
-## Testing Locally
+## Production Setup
 
-1. Start the dev server: `npm run dev`
-2. Enter a valid Solana wallet address (32-44 characters)
-3. Click "Buy SOL" to test the MoonPay widget integration
-4. The widget should open as a modal
-
-### Valid Solana Address Example
-```
-DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK
-```
-
-## Production Build
-
-Test the production build locally:
-
-```bash
-npm run build
-npm start
-```
+1. **Get Production App ID**: Obtain a production App ID from Alchemy Pay.
+2. **Update Environment**:
+   ```env
+   NEXT_PUBLIC_ALCHEMY_PAY_ENV=production
+   ```
+3. **Deploy to Vercel**: Set the environment variables in your Vercel project settings.
 
 ## Deployment to Vercel
 
-### Option 1: Deploy via Vercel CLI
-
-1. **Install Vercel CLI**
-   ```bash
-   npm i -g vercel
-   ```
-
-2. **Deploy**
-   ```bash
-   vercel
-   ```
-
-3. **Add environment variable in Vercel Dashboard**
-   - Go to your project settings
-   - Navigate to "Environment Variables"
-   - Add `NEXT_PUBLIC_MOONPAY_API_KEY` with your API key
-   - Redeploy if needed
-
-### Option 2: Deploy via GitHub
-
-1. Push your code to GitHub
-2. Import the repository in [Vercel Dashboard](https://vercel.com)
-3. Add environment variable `NEXT_PUBLIC_MOONPAY_API_KEY`
-4. Deploy
+1. Push your code to GitHub.
+2. Import the repository in [Vercel Dashboard](https://vercel.com).
+3. Add environment variables:
+   - `NEXT_PUBLIC_ALCHEMY_PAY_APP_ID`
+   - `NEXT_PUBLIC_ALCHEMY_PAY_ENV`
+4. Deploy.
 
 ## Telegram Mini App Setup
 
-After deploying to Vercel:
+1. **Get your Vercel URL** (e.g., `https://alchemy-sol.vercel.app`).
+2. **Configure with BotFather**:
+   - Open [@BotFather](https://t.me/BotFather) on Telegram.
+   - Set the bot's Menu Button URL to your Vercel URL.
 
-1. **Get your Vercel URL** (e.g., `https://moonpay.vercel.app`)
-
-2. **Configure with BotFather**
-   - Open [@BotFather](https://t.me/BotFather) on Telegram
-   - Send `/mybots`
-   - Select your bot
-   - Choose "Bot Settings" → "Menu Button"
-   - Select "Configure Menu Button"
-   - Enter your Vercel URL
-   - Set button text (e.g., "Buy SOL")
-
-3. **Test in Telegram**
-   - Open your bot in Telegram
-   - Click the menu button
-   - The Mini App should open inside Telegram
-
-## Project Structure
+## Folder Structure
 
 ```
-moonpay/
-├── app/
-│   ├── layout.tsx       # Root layout with SEO & Telegram compatibility
-│   ├── page.tsx         # Main landing page
-│   └── globals.css      # Global styles with dark mode
-├── components/
-│   └── BuySolCard.tsx   # Main card component with wallet input
-├── lib/
-│   └── moonpay.ts       # MoonPay SDK integration & validation
-├── .env.example         # Environment variables template
-├── .env.local           # Your local environment (git-ignored)
-├── package.json         # Dependencies
-└── README.md            # This file
+/app
+  /page.tsx         # Main entry point
+  /layout.tsx       # Root layout
+/components
+  BuySolCard.tsx    # Purchase UI
+/lib
+  alchemypay.ts      # Alchemy Pay logic
 ```
 
-## How It Works
+## Security & Best Practices
 
-1. User enters their Solana wallet address
-2. Address is validated (32-44 characters, base58 format)
-3. On "Buy SOL", MoonPay widget opens as a modal
-4. User completes payment through MoonPay
-5. SOL is sent directly to the provided wallet address
-6. No custody - fully non-custodial flow
-
-## Security Features
-
-- ✅ Client-side wallet address validation
-- ✅ Environment variables for sensitive keys
-- ✅ HTTPS enabled by default on Vercel
-- ✅ No backend - stateless architecture
-- ✅ MoonPay handles all payment processing
-- ✅ User-friendly error messages
-
-## Troubleshooting
-
-### MoonPay widget not opening
-- Check that `NEXT_PUBLIC_MOONPAY_API_KEY` is set correctly
-- Verify the API key is valid in MoonPay dashboard
-- Check browser console for errors
-
-### Invalid wallet address error
-- Solana addresses must be 32-44 characters
-- Ensure no extra spaces or invalid characters
-- Use a valid Solana wallet address
-
-### Telegram WebView issues
-- Ensure your Vercel deployment uses HTTPS
-- Test the URL directly in a mobile browser first
-- Check Telegram Bot settings in BotFather
-
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_MOONPAY_API_KEY` | Your MoonPay API key | Yes |
-
-## License
-
-MIT
-
-## Support
-
-For MoonPay-related issues, visit [MoonPay Support](https://support.moonpay.com/)
-
-For Next.js issues, visit [Next.js Documentation](https://nextjs.org/docs)
+- ✅ Client-side Solana address validation.
+- ✅ Environment variables for public config.
+- ✅ No backend required (stateless).
+- ✅ Alchemy Pay handles KYC and payment processing.
 
 ---
 
-**Built with ❤️ for the Solana ecosystem**
+**Built for the Solana ecosystem**
