@@ -5,7 +5,7 @@
  * for purchasing Solana (SOL) directly to a user's wallet address.
  */
 
-import { MoonPayWebSdk } from '@moonpay/moonpay-js';
+import { loadMoonPay } from '@moonpay/moonpay-js';
 
 /**
  * Interface for MoonPay widget configuration
@@ -31,10 +31,18 @@ export async function openMoonPayWidget(config: MoonPayConfig): Promise<void> {
     }
 
     try {
-        // Initialize MoonPay SDK
-        const moonPaySdk = new MoonPayWebSdk({
+        // Load MoonPay SDK
+        const moonPaySdkInit = await loadMoonPay();
+
+        if (!moonPaySdkInit) {
+            throw new Error('Failed to load MoonPay SDK');
+        }
+
+        // Initialize MoonPay Web SDK
+        const moonPaySdk = moonPaySdkInit({
             flow: 'buy',
             environment: 'production', // Use 'sandbox' for testing
+            variant: 'overlay',
             params: {
                 apiKey,
                 // Currency to purchase (Solana)
@@ -48,6 +56,10 @@ export async function openMoonPayWidget(config: MoonPayConfig): Promise<void> {
                 colorCode: '#9945FF', // Solana brand color
             },
         });
+
+        if (!moonPaySdk) {
+            throw new Error('Failed to initialize MoonPay widget');
+        }
 
         // Open the widget
         moonPaySdk.show();
